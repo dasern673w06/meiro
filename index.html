@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自動生成迷路ゲーム</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+            text-align: center;
+            /* スマートフォンでの操作性を考慮 */
+            padding-bottom: 20px;
+            box-sizing: border-box;
+        }
+        canvas {
+            border: 2px solid #333;
+            background-color: #fff;
+            touch-action: none; /* タッチジェスチャーの無効化 */
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #555;
+            min-height: 40px; /* メッセージの表示領域を確保 */
+        }
+        #controls {
+            margin-top: 20px;
+            display: grid;
+            grid-template-areas:
+                ". up ."
+                "left . right"
+                ". down .";
+            grid-template-columns: 80px 80px 80px;
+            grid-template-rows: 80px 80px 80px;
+        }
+        .control-button {
+            width: 70px;
+            height: 70px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        #up { grid-area: up; }
+        #down { grid-area: down; }
+        #left { grid-area: left; }
+        #right { grid-area: right; }
+    </style>
+</head>
+<body>
+    <h1>自動生成迷路ゲーム</h1>
+    <canvas id="mazeCanvas" width="500" height="500"></canvas>
+    <div id="message">スコア: 0 - 矢印キーで動かしてリンゴをゲット！</div>
+
+    <div id="controls">
+        <button id="up" class="control-button">▲</button>
+        <button id="left" class="control-button">◀</button>
+        <button id="right" class="control-button">▶</button>
+        <button id="down" class="control-button">▼</button>
+    </div>
+
+    <script src="maze_game.js"></script>
+</body>
+</html>
