@@ -211,3 +211,89 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     messageDiv.textContent = `ゲームオーバー！最終スコア: ${score}`;
                     setTimeout(() => {
+                        resetGame(); // 完全リセット
+                    }, 3000);
+                }
+                return;
+            }
+        }
+    }
+
+    // 勝利判定
+    function checkWin() {
+        if (player.x === goal.x && player.y === goal.y && gameActive) {
+            gameActive = false;
+            messageDiv.textContent = `ゴール！おめでとう！現在のスコア: ${score}`;
+            setTimeout(() => {
+                nextGame(); // スコアと残機を維持して次へ
+            }, 3000);
+        }
+    }
+
+    // 次のゲーム開始
+    function nextGame() {
+        gameActive = true;
+        messageDiv.textContent = `スコア: ${score} | 残機: ${lives}`;
+        initMaze();
+        generateMaze(1, 1);
+        initEnemies();
+        initApples();
+        player = { x: 1, y: 1 };
+        draw();
+        clearInterval(enemyInterval);
+        enemyInterval = setInterval(moveEnemies, enemyMoveInterval);
+    }
+
+    // ゲームのリセット（初期スコアに戻す）
+    function resetGame() {
+        score = 0;
+        lives = initialLives; // 残機を初期値に戻す
+        nextGame();
+    }
+
+    // キー入力の処理
+    document.addEventListener('keydown', (e) => {
+        if (!gameActive) return;
+        switch (e.key) {
+            case 'ArrowUp':
+                movePlayer(0, -1);
+                break;
+            case 'ArrowDown':
+                movePlayer(0, 1);
+                break;
+            case 'ArrowLeft':
+                movePlayer(-1, 0);
+                break;
+            case 'ArrowRight':
+                movePlayer(1, 0);
+                break;
+        }
+    });
+
+    // タッチボタンのイベントリスナーを追加
+    upButton.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // スクロールを防ぐ
+        movePlayer(0, -1);
+    });
+    downButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        movePlayer(0, 1);
+    });
+    leftButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        movePlayer(-1, 0);
+    });
+    rightButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        movePlayer(1, 0);
+    });
+    
+    // PCでのクリック操作にも対応
+    upButton.addEventListener('click', () => movePlayer(0, -1));
+    downButton.addEventListener('click', () => movePlayer(0, 1));
+    leftButton.addEventListener('click', () => movePlayer(-1, 0));
+    rightButton.addEventListener('click', () => movePlayer(1, 0));
+
+    let enemyInterval;
+    nextGame();
+});
