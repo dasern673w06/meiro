@@ -10,21 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const rightButton = document.getElementById('right');
 
     // ゲーム設定
-    const mazeWidth = 21; // 奇数にすること
-    const mazeHeight = 21; // 奇数にすること
+    const mazeWidth = 21;
+    const mazeHeight = 21;
     const cellSize = canvas.width / mazeWidth;
-    const enemyCount = 3; // 敵の数
-    const enemyMoveInterval = 1000; // 敵の移動間隔（ミリ秒）
-    const appleCount = 5; // リンゴの数
-    const initialLives = 3; // 初期残機数
+    const enemyCount = 3;
+    const enemyMoveInterval = 1000;
+    const appleCount = 5;
 
     let maze = [];
     let player = { x: 1, y: 1 };
     let goal = { x: mazeWidth - 2, y: mazeHeight - 2 };
     let enemies = [];
-    let apples = []; // リンゴを管理する配列
-    let score = 0; // スコア
-    let lives = initialLives; // 残機
+    let apples = [];
+    let score = 0;
     let gameActive = true;
 
     // 画像の読み込み
@@ -37,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let y = 0; y < mazeHeight; y++) {
             maze[y] = [];
             for (let x = 0; x < mazeWidth; x++) {
-                maze[y][x] = 1; // 1は壁
+                maze[y][x] = 1;
             }
         }
     }
@@ -189,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         apples = apples.filter(apple => {
             if (player.x === apple.x && player.y === apple.y) {
                 score++;
-                messageDiv.textContent = `スコア: ${score} | 残機: ${lives}`;
+                messageDiv.textContent = `スコア: ${score}`;
                 return false;
             }
             return true;
@@ -201,19 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const enemy of enemies) {
             if (player.x === enemy.x && player.y === enemy.y) {
                 gameActive = false;
-                lives--; // 残機を減らす
-                
-                if (lives > 0) {
-                    messageDiv.textContent = `敵に捕まった！残機が${lives}つになったよ`;
-                    setTimeout(() => {
-                        nextGame(); // 次のゲームへ
-                    }, 3000);
-                } else {
-                    messageDiv.textContent = `ゲームオーバー！最終スコア: ${score}`;
-                    setTimeout(() => {
-                        resetGame(); // 完全リセット
-                    }, 3000);
-                }
+                messageDiv.textContent = `ゲームオーバー！最終スコア: ${score}`;
+                setTimeout(() => {
+                    resetGame();
+                }, 3000);
                 return;
             }
         }
@@ -225,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gameActive = false;
             messageDiv.textContent = `ゴール！おめでとう！現在のスコア: ${score}`;
             setTimeout(() => {
-                nextGame(); // スコアと残機を維持して次へ
+                nextGame();
             }, 3000);
         }
     }
@@ -233,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 次のゲーム開始
     function nextGame() {
         gameActive = true;
-        messageDiv.textContent = `スコア: ${score} | 残機: ${lives}`;
+        messageDiv.textContent = `スコア: ${score} - 矢印キーで動かしてリンゴをゲット！`;
         initMaze();
         generateMaze(1, 1);
         initEnemies();
@@ -247,11 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ゲームのリセット（初期スコアに戻す）
     function resetGame() {
         score = 0;
-        lives = initialLives; // 残機を初期値に戻す
         nextGame();
     }
 
-    // キー入力の処理
+    // キー入力の処理 (変更なし)
     document.addEventListener('keydown', (e) => {
         if (!gameActive) return;
         switch (e.key) {
