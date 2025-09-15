@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('mazeCanvas');
     const ctx = canvas.getContext('2d');
     const messageDiv = document.getElementById('message');
@@ -10,19 +10,21 @@
     const rightButton = document.getElementById('right');
 
     // ゲーム設定
-    const mazeWidth = 21;
-    const mazeHeight = 21;
+    const mazeWidth = 21; // 奇数にすること
+    const mazeHeight = 21; // 奇数にすること
     const cellSize = canvas.width / mazeWidth;
-    const enemyCount = 3;
-    const enemyMoveInterval = 1000;
-    const appleCount = 5;
+    const enemyCount = 3; // 敵の数
+    const enemyMoveInterval = 1000; // 敵の移動間隔（ミリ秒）
+    const appleCount = 5; // リンゴの数
+    const initialLives = 3; // 初期残機数
 
     let maze = [];
     let player = { x: 1, y: 1 };
     let goal = { x: mazeWidth - 2, y: mazeHeight - 2 };
     let enemies = [];
-    let apples = [];
-    let score = 0;
+    let apples = []; // リンゴを管理する配列
+    let score = 0; // スコア
+    let lives = initialLives; // 残機
     let gameActive = true;
 
     // 画像の読み込み
@@ -35,7 +37,7 @@
         for (let y = 0; y < mazeHeight; y++) {
             maze[y] = [];
             for (let x = 0; x < mazeWidth; x++) {
-                maze[y][x] = 1;
+                maze[y][x] = 1; // 1は壁
             }
         }
     }
@@ -187,7 +189,7 @@
         apples = apples.filter(apple => {
             if (player.x === apple.x && player.y === apple.y) {
                 score++;
-                messageDiv.textContent = `スコア: ${score}`;
+                messageDiv.textContent = `スコア: ${score} | 残機: ${lives}`;
                 return false;
             }
             return true;
@@ -199,89 +201,13 @@
         for (const enemy of enemies) {
             if (player.x === enemy.x && player.y === enemy.y) {
                 gameActive = false;
-                messageDiv.textContent = `ゲームオーバー！最終スコア: ${score}`;
-                setTimeout(() => {
-                    resetGame();
-                }, 3000);
-                return;
-            }
-        }
-    }
-
-    // 勝利判定
-    function checkWin() {
-        if (player.x === goal.x && player.y === goal.y && gameActive) {
-            gameActive = false;
-            messageDiv.textContent = `ゴール！おめでとう！現在のスコア: ${score}`;
-            setTimeout(() => {
-                nextGame();
-            }, 3000);
-        }
-    }
-
-    // 次のゲーム開始
-    function nextGame() {
-        gameActive = true;
-        messageDiv.textContent = `スコア: ${score} - 矢印キーで動かしてリンゴをゲット！`;
-        initMaze();
-        generateMaze(1, 1);
-        initEnemies();
-        initApples();
-        player = { x: 1, y: 1 };
-        draw();
-        clearInterval(enemyInterval);
-        enemyInterval = setInterval(moveEnemies, enemyMoveInterval);
-    }
-
-    // ゲームのリセット（初期スコアに戻す）
-    function resetGame() {
-        score = 0;
-        nextGame();
-    }
-
-    // キー入力の処理 (変更なし)
-    document.addEventListener('keydown', (e) => {
-        if (!gameActive) return;
-        switch (e.key) {
-            case 'ArrowUp':
-                movePlayer(0, -1);
-                break;
-            case 'ArrowDown':
-                movePlayer(0, 1);
-                break;
-            case 'ArrowLeft':
-                movePlayer(-1, 0);
-                break;
-            case 'ArrowRight':
-                movePlayer(1, 0);
-                break;
-        }
-    });
-
-    // タッチボタンのイベントリスナーを追加
-    upButton.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // スクロールを防ぐ
-        movePlayer(0, -1);
-    });
-    downButton.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        movePlayer(0, 1);
-    });
-    leftButton.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        movePlayer(-1, 0);
-    });
-    rightButton.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        movePlayer(1, 0);
-    });
-    
-    // PCでのクリック操作にも対応
-    upButton.addEventListener('click', () => movePlayer(0, -1));
-    downButton.addEventListener('click', () => movePlayer(0, 1));
-    leftButton.addEventListener('click', () => movePlayer(-1, 0));
-    rightButton.addEventListener('click', () => movePlayer(1, 0));
-
-    let enemyInterval;
-    nextGame();
-});
+                lives--; // 残機を減らす
+                
+                if (lives > 0) {
+                    messageDiv.textContent = `敵に捕まった！残機が${lives}つになったよ`;
+                    setTimeout(() => {
+                        nextGame(); // 次のゲームへ
+                    }, 3000);
+                } else {
+                    messageDiv.textContent = `ゲームオーバー！最終スコア: ${score}`;
+                    setTimeout(() => {
